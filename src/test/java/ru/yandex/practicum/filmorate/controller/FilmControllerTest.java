@@ -36,7 +36,7 @@ class FilmControllerTest {
     @SneakyThrows
     @Test
     void testPostFilmValidation() {
-        mockMvc.perform(post("/film")
+        mockMvc.perform(post("/films")
                         .contentType("application/json")
                         .content(film.toString()))
                 .andExpect(status().isOk());
@@ -44,7 +44,7 @@ class FilmControllerTest {
         film.setId(2);
         film.setName("");
 
-        mockMvc.perform(post("/film")
+        mockMvc.perform(post("/films")
                         .contentType("application/json")
                         .content(film.toString()))
                 .andExpect(status().is4xxClientError());
@@ -53,7 +53,7 @@ class FilmControllerTest {
         film.setName("name");
         film.setDescription("A character can be any letter, number, punctuation, special character, or space. Each of these characters takes up one byte of space in a computer's memory. Some Unicode characters, like emojis and some letters in non-Latin alphabets, take up two bytes of space and therefore count as two characters. Use our character counter tool below for an accurate count of your characters.");
 
-        mockMvc.perform(post("/film")
+        mockMvc.perform(post("/films")
                         .contentType("application/json")
                         .content(film.toString()))
                 .andExpect(status().is4xxClientError());
@@ -62,7 +62,7 @@ class FilmControllerTest {
         film.setDescription("description");
         film.setReleaseDate(LocalDate.of(1000, 5, 5));
 
-        mockMvc.perform(post("/film")
+        mockMvc.perform(post("/films")
                         .contentType("application/json")
                         .content(film.toString()))
                 .andExpect(status().is4xxClientError());
@@ -71,14 +71,14 @@ class FilmControllerTest {
         film.setReleaseDate(LocalDate.of(2000, 5, 5));
         film.setDuration(-1);
 
-        mockMvc.perform(post("/film")
+        mockMvc.perform(post("/films")
                         .contentType("application/json")
                         .content(film.toString()))
                 .andExpect(status().is4xxClientError());
 
         String inValidFilm = "";
 
-        mockMvc.perform(post("/film")
+        mockMvc.perform(post("/films")
                         .contentType("application/json")
                         .content(inValidFilm))
                 .andExpect(status().is4xxClientError());
@@ -87,7 +87,7 @@ class FilmControllerTest {
     @SneakyThrows
     @Test
     void testGetFilms() {
-        mockMvc.perform(post("/film")
+        mockMvc.perform(post("/films")
                         .contentType("application/json")
                         .content(film.toString()))
                 .andExpect(status().isOk());
@@ -99,14 +99,14 @@ class FilmControllerTest {
     @SneakyThrows
     @Test
     void testPutFilmValidation() {
-        mockMvc.perform(post("/film")
+        mockMvc.perform(post("/films")
                         .contentType("application/json")
                         .content(film.toString()))
                 .andExpect(status().isOk());
 
         film.setName("Updated film");
 
-        mockMvc.perform(put("/film")
+        mockMvc.perform(put("/films")
                         .contentType("application/json")
                         .content(film.toString()))
                 .andExpect(status().isOk())

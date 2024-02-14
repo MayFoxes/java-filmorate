@@ -36,14 +36,14 @@ class UserControllerTest {
     @SneakyThrows
     @Test
     void testUserPostValidation() {
-        mockMvc.perform(post("/user")
+        mockMvc.perform(post("/users")
                         .contentType("application/json")
                         .content(user.toString()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Login"));
 
         user.setLogin("");
-        mockMvc.perform(post("/user")
+        mockMvc.perform(post("/users")
                         .contentType("application/json")
                         .content(user.toString()))
                 .andExpect(status().is4xxClientError());
@@ -51,7 +51,7 @@ class UserControllerTest {
         user.setLogin("New login");
         user.setEmail("mail.com");
 
-        mockMvc.perform(post("/user")
+        mockMvc.perform(post("/users")
                         .contentType("application/json")
                         .content(user.toString()))
                 .andExpect(status().is4xxClientError());
@@ -59,7 +59,7 @@ class UserControllerTest {
         user.setEmail("NewMail@yandex.com");
         user.setBirthday(LocalDate.of(2500, 12, 12));
 
-        mockMvc.perform(post("/user")
+        mockMvc.perform(post("/users")
                         .contentType("application/json")
                         .content(user.toString()))
                 .andExpect(status().is4xxClientError());
@@ -75,14 +75,14 @@ class UserControllerTest {
     @SneakyThrows
     @Test
     void testPutUserValidation() {
-        mockMvc.perform(post("/user")
+        mockMvc.perform(post("/users")
                         .contentType("application/json")
                         .content(user.toString()))
                 .andExpect(status().isOk());
 
         user.setName("Updated user");
 
-        mockMvc.perform(put("/user")
+        mockMvc.perform(put("/users")
                         .contentType("application/json")
                         .content(user.toString()))
                 .andExpect(status().isOk())

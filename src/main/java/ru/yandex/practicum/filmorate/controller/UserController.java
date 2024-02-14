@@ -26,7 +26,7 @@ public class UserController {
         return new ArrayList<>(users.values());
     }
 
-    @PostMapping(value = "/user")
+    @PostMapping(value = "/users")
     public User addUser(@Valid @RequestBody User user) {
         if (user.getName() == null || user.getName().isEmpty() || user.getName().isBlank()) {
             user.setName(user.getLogin());
@@ -38,7 +38,7 @@ public class UserController {
         return user;
     }
 
-    @PutMapping(value = "/user")
+    @PutMapping(value = "/users")
     public User updateUser(@Valid @RequestBody User user) {
         if (users.containsKey(user.getId())) {
             users.put(user.getId(), user);
