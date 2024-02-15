@@ -16,12 +16,11 @@ public class UserController {
     private int id;
     private final HashMap<Integer, User> users = new HashMap<>();
 
-    private void idGenerated() {
-        id++;
+    private int idGenerated() {
+        return id++;
     }
 
-    @RequestMapping("/users")
-    @GetMapping
+    @GetMapping(value = "/users")
     public List<User> getAllUsers() {
         return new ArrayList<>(users.values());
     }
@@ -31,8 +30,7 @@ public class UserController {
         if (user.getName() == null || user.getName().isEmpty() || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
-        idGenerated();
-        user.setId(id);
+        user.setId(idGenerated());
         users.put(user.getId(), user);
         log.info("User added: {}", user);
         return user;
@@ -41,12 +39,13 @@ public class UserController {
     @PutMapping(value = "/users")
     public User updateUser(@Valid @RequestBody User user) {
         if (users.containsKey(user.getId())) {
+            if (user.getName() == null || user.getName().isEmpty() || user.getName().isBlank()) {
+                user.setName(user.getLogin());
+            }
             users.put(user.getId(), user);
             log.info("User updated: {}", user);
             return user;
-        } else {
-            throw new ValidatorException("Wrong id / do not have this user");
-
         }
+        throw new ValidatorException("Wrong id / do not have this user");
     }
 }

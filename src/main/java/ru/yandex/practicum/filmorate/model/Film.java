@@ -22,6 +22,7 @@ public class Film {
     @Positive(message = "The length of the film must be positive")
     private long duration;
 
+    @Override
     public String toString() {
         return String.format("{\"id\":%d,\"name\":\"%s\",\"description\":\"%s\",\"releaseDate\":\"%s\",\"duration\":%d}",
                 this.id, this.name, this.description, this.releaseDate, this.duration);

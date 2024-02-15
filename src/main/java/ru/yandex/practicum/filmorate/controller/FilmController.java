@@ -16,20 +16,18 @@ public class FilmController {
     private int id;
     private final HashMap<Integer, Film> films = new HashMap<>();
 
-    private void idGenerated() {
-        id++;
+    private int idGenerated() {
+        return id++;
     }
 
-    @RequestMapping("/films")
-    @GetMapping
+    @GetMapping(value = "/films")
     public List<Film> getAllFilm() {
         return new ArrayList<>(films.values());
     }
 
     @PostMapping(value = "/films")
     public Film addFilm(@Valid @RequestBody Film film) {
-        idGenerated();
-        film.setId(id);
+        film.setId(idGenerated());
         films.put(film.getId(), film);
         log.info("Film added: {}", film);
         return film;
@@ -41,9 +39,8 @@ public class FilmController {
             films.put(film.getId(), film);
             log.info("Film updated: {}", film);
             return film;
-        } else {
-            throw new ValidatorException("Wrong id / do not have this film:" + film);
         }
+        throw new ValidatorException("Wrong id / do not have this film:" + film);
     }
 }
 

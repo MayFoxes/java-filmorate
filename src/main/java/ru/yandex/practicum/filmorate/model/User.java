@@ -20,6 +20,7 @@ public class User {
     @PastOrPresent(message = "Date of birth must not be in the future")
     private LocalDate birthday;
 
+    @Override
     public String toString() {
         return String.format("{\"id\":%d,\"login\":\"%s\",\"name\":\"%s\",\"email\":\"%s\",\"birthday\":\"%s\"}",
                 this.id, this.login, this.name, this.email, this.birthday);
