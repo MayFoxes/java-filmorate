@@ -17,7 +17,7 @@ public class FilmController {
     private final HashMap<Integer, Film> films = new HashMap<>();
 
     private int idGenerated() {
-        return id++;
+        return ++id;
     }
 
     @GetMapping(value = "/films")

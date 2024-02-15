@@ -17,7 +17,7 @@ public class UserController {
     private final HashMap<Integer, User> users = new HashMap<>();
 
     private int idGenerated() {
-        return id++;
+        return ++id;
     }
 
     @GetMapping(value = "/users")
