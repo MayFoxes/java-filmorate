@@ -1,12 +1,12 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import lombok.SneakyThrows;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.filmorate.model.User;
 
@@ -16,76 +16,127 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(SpringExtension.class)
-@WebMvcTest(controllers = UserController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 class UserControllerTest {
-    User user = new User();
-    UserController userController = new UserController();
+    private static final LocalDate BIRTHDAY = LocalDate.now().minusYears(20);
+    private static final User VALID_USER = new User(1, "my@mail.ru", "login", "name", BIRTHDAY);
+
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @BeforeEach
-    void beforeEach() {
-        user.setId(1);
-        user.setLogin("Login");
-        user.setEmail("Email@yandex.ru");
-        user.setBirthday(LocalDate.of(2000, 12, 12));
-        userController.addUser(user);
+    void postValidUser() throws Exception {
+
+        mockMvc.perform(post("/users")
+                .content(objectMapper.writeValueAsString(VALID_USER))
+                .contentType(MediaType.APPLICATION_JSON));
+
+        mockMvc.perform(post("/users")
+                .content(objectMapper.writeValueAsString(VALID_USER))
+                .contentType(MediaType.APPLICATION_JSON));
     }
 
-    @SneakyThrows
     @Test
-    void testUserPostValidation() {
+    void shouldReturn200AndValidUserOnPost() throws Exception {
         mockMvc.perform(post("/users")
-                        .contentType("application/json")
-                        .content(user.toString()))
+                        .content(objectMapper.writeValueAsString(VALID_USER))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Login"));
-
-        user.setLogin("");
-        mockMvc.perform(post("/users")
-                        .contentType("application/json")
-                        .content(user.toString()))
-                .andExpect(status().is4xxClientError());
-
-        user.setLogin("New login");
-        user.setEmail("mail.com");
-
-        mockMvc.perform(post("/users")
-                        .contentType("application/json")
-                        .content(user.toString()))
-                .andExpect(status().is4xxClientError());
-
-        user.setEmail("NewMail@yandex.com");
-        user.setBirthday(LocalDate.of(2500, 12, 12));
-
-        mockMvc.perform(post("/users")
-                        .contentType("application/json")
-                        .content(user.toString()))
-                .andExpect(status().is4xxClientError());
+                .andExpect(jsonPath("$.email").value("my@mail.ru"))
+                .andExpect(jsonPath("$.login").value("login"))
+                .andExpect(jsonPath("$.name").value("name"))
+                .andExpect(jsonPath("$.birthday").value(BIRTHDAY.toString()));
     }
 
-    @SneakyThrows
     @Test
-    void testUserGet() {
-        mockMvc.perform(get("/users"))
-                .andExpect(status().isOk());
+    public void shouldReturn200PostOnEmptyUserName() throws Exception {
+
+        User user = new User(1, "my@mail.ru", "login", "", BIRTHDAY);
+
+        mockMvc.perform(post("/users")
+                        .content(objectMapper.writeValueAsString(user))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("login"));
     }
 
-    @SneakyThrows
     @Test
-    void testPutUserValidation() {
-        mockMvc.perform(post("/users")
-                        .contentType("application/json")
-                        .content(user.toString()))
-                .andExpect(status().isOk());
+    public void shouldReturn400PostOnEmptyUserLogin() throws Exception {
 
-        user.setName("Updated user");
+        User user = new User(1, "my@mail.ru", "", "", BIRTHDAY);
+
+        mockMvc.perform(post("/users")
+                        .content(objectMapper.writeValueAsString(user))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldReturn400PostInvalidMail() throws Exception {
+
+        User user = new User(1, "mymail.ru", "login", "", BIRTHDAY);
+
+        mockMvc.perform(post("/users")
+                        .content(objectMapper.writeValueAsString(user))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldReturn200PutValidUserUpdate() throws Exception {
+
+        User updatedUser = new User(1, "myUpdated@mail.ru", "UpdatedLogin", "", BIRTHDAY);
 
         mockMvc.perform(put("/users")
-                        .contentType("application/json")
-                        .content(user.toString()))
+                        .content(objectMapper.writeValueAsString(updatedUser))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Updated user"));
+                .andExpect(jsonPath("$.email").value("myUpdated@mail.ru"))
+                .andExpect(jsonPath("$.login").value("UpdatedLogin"))
+                .andExpect(jsonPath("$.name").value("UpdatedLogin"))
+                .andExpect(jsonPath("$.birthday").value(BIRTHDAY.toString()));
+    }
+
+    @Test
+    public void shouldReturn200PutAndListOfFriends() throws Exception {
+
+        mockMvc.perform(put("/users/1/friends/2"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[1].id").value(2))
+                .andExpect(jsonPath("$[0].friends.length()").value(1))
+                .andExpect(jsonPath("$[1].friends.length()").value(1))
+                .andExpect(jsonPath("$[0].friends[0]").value(2))
+                .andExpect(jsonPath("$[1].friends[0]").value(1));
+    }
+
+    @Test
+    public void shouldReturn200Delete() throws Exception {
+
+        mockMvc.perform(put("/users/1/friends/2"));
+
+        mockMvc.perform(delete("/users/1/friends/2"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].id").value(2))
+                .andExpect(jsonPath("$[1].id").value(1))
+                .andExpect(jsonPath("$[0].friends.length()").value(0))
+                .andExpect(jsonPath("$[1].friends.length()").value(0));
+    }
+
+    @Test
+    public void shouldReturn200andGetListOfFriend() throws Exception {
+
+        mockMvc.perform(put("/users/1/friends/2"));
+
+        mockMvc.perform(get("/users/1/friends"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0].id").value(2));
     }
 }

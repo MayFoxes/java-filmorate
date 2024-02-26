@@ -11,7 +11,7 @@ import java.lang.annotation.RetentionPolicy;
 @Constraint(validatedBy = FilmValidator.class)
 @Past
 public @interface FilmAnnotation {
-    String message() default "Date must not be before {value}";
+    String message() default "Film release date must not be before {value}";
     Class<?>[] groups() default {};
     Class<?>[] payload() default {};
     String value() default "1895-12-28";
