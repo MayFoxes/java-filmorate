@@ -7,15 +7,15 @@ import java.util.List;
 public interface FilmService {
     List<Film> findAll();
 
-    Film findById(int id);
+    Film findById(Integer id);
 
     Film create(Film film);
 
     Film update(Film film);
 
-    Film likeFilm(int id, int userId);
+    Film likeFilm(Integer id, Integer userId);
 
-    Film dislikeFilm(int id, int userId);
+    Film dislikeFilm(Integer id, Integer userId);
 
-    List<Film> getPopular(int count);
+    List<Film> getPopular(Integer count);
 }

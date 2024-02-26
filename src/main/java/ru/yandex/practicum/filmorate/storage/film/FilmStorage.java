@@ -10,15 +10,15 @@ public interface FilmStorage {
 
     Film update(Film film);
 
-    Film findById(int filmId);
+    Film findById(Integer filmId);
 
     List<Film> findAll();
 
-    Film likeFilm(int id, int userId);
+    Film likeFilm(Integer id, Integer userId);
 
-    Film deleteLike(int id, int userId);
+    Film deleteLike(Integer id, Integer userId);
 
-    List<Film> getPopular(int count);
+    List<Film> getPopular(Integer count);
 
-    void checkFilmExist(int id);
+    void checkFilmExist(Integer id);
 }

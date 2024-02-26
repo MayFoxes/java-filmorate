@@ -7,19 +7,19 @@ import java.util.List;
 public interface UserStorage {
     User create(User user);
 
-    User findById(int id);
+    User findById(Integer id);
 
     User updateUser(User user);
 
     List<User> findAll();
 
-    void checkUserExist(int id);
+    void checkUserExist(Integer id);
 
-    List<User> addFriend(int id, int friendId);
+    List<User> addFriend(Integer id, Integer friendId);
 
-    List<User> getFriends(int id);
+    List<User> getFriends(Integer id);
 
-    List<User> deleteFriend(int id, int friendId);
+    List<User> deleteFriend(Integer id, Integer friendId);
 
-    List<User> getCommonFriends(int id, int otherId);
+    List<User> getCommonFriends(Integer id, Integer otherId);
 }

@@ -19,7 +19,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findById(int id) {
+    public User findById(Integer id) {
         userStorage.checkUserExist(id);
         return userStorage.findById(id);
     }
@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> addFriend(int id, int friendId) {
+    public List<User> addFriend(Integer id, Integer friendId) {
         userStorage.checkUserExist(id);
         userStorage.checkUserExist(friendId);
 
@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> deleteFriend(int id, int friendId) {
+    public List<User> deleteFriend(Integer id, Integer friendId) {
         userStorage.checkUserExist(id);
         userStorage.checkUserExist(friendId);
 
@@ -51,14 +51,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getFriends(int id) {
+    public List<User> getFriends(Integer id) {
         userStorage.checkUserExist(id);
 
         return userStorage.getFriends(id);
     }
 
     @Override
-    public List<User> getCommonFriends(int id, int otherId) {
+    public List<User> getCommonFriends(Integer id, Integer otherId) {
         userStorage.checkUserExist(id);
         userStorage.checkUserExist(otherId);
 

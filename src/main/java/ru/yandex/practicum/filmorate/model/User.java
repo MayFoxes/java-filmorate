@@ -15,6 +15,7 @@ import java.util.Set;
 @Data
 @ToString
 public class User {
+
     private Integer id = 0;
 
     @Email(message = "Email must not be empty and must have \"@\" ")

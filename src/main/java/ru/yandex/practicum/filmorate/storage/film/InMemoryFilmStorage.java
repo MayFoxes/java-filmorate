@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 public class InMemoryFilmStorage implements FilmStorage {
-    private int id;
+    private int id = 0;
     private final HashMap<Integer, Film> films = new HashMap<>();
 
     private int idGenerated() {
@@ -40,7 +40,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film findById(int filmId) {
+    public Film findById(Integer filmId) {
         checkFilmExist(filmId);
 
         return films.get(filmId);
@@ -52,7 +52,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film likeFilm(int id, int userId) {
+    public Film likeFilm(Integer id, Integer userId) {
         Film film = films.get(id);
 
         film.getLikes().add(userId);
@@ -62,7 +62,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film deleteLike(int id, int userId) {
+    public Film deleteLike(Integer id, Integer userId) {
         Film film = films.get(id);
 
         film.getLikes().remove(userId);
@@ -72,7 +72,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> getPopular(int count) {
+    public List<Film> getPopular(Integer count) {
         return films.values()
                 .stream()
                 .sorted(Comparator.comparing(Film::getRate).reversed())
@@ -81,7 +81,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public void checkFilmExist(int id) {
+    public void checkFilmExist(Integer id) {
         if (films.get(id) == null) {
             throw new FilmNotFoundException(String.format("There are no such a film with id=%d: %s", id, films.get(id)));
         }

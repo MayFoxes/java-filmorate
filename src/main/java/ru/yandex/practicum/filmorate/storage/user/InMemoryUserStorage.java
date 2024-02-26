@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 public class InMemoryUserStorage implements UserStorage {
-    private int id;
+    private int id = 0;
     private final HashMap<Integer, User> users = new HashMap<>();
 
     private int idGenerated() {
@@ -43,7 +43,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User findById(int uId) {
+    public User findById(Integer uId) {
         return users.get(uId);
     }
 
@@ -53,7 +53,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public List<User> addFriend(int id, int friendId) {
+    public List<User> addFriend(Integer id, Integer friendId) {
         users.get(id).getFriends().add(friendId);
         users.get(friendId).getFriends().add(id);
         log.info("User{} add friend:{}", users.get(id), users.get(friendId));
@@ -61,7 +61,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public List<User> deleteFriend(int id, int friendId) {
+    public List<User> deleteFriend(Integer id, Integer friendId) {
         users.get(id).getFriends().remove(friendId);
         users.get(friendId).getFriends().remove(id);
         log.info("User{} delete friend:{}", users.get(id), users.get(friendId));
@@ -69,14 +69,14 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public List<User> getFriends(int id) {
+    public List<User> getFriends(Integer id) {
         return users.get(id).getFriends().stream()
                 .map(users::get)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<User> getCommonFriends(int id, int otherId) {
+    public List<User> getCommonFriends(Integer id, Integer otherId) {
         return users.get(id).getFriends().stream()
                 .filter(users.get(otherId).getFriends()::contains)
                 .map(users::get)
@@ -84,7 +84,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public void checkUserExist(int id) {
+    public void checkUserExist(Integer id) {
         if (users.get(id) == null) {
             throw new UserNotFoundException(String.format("There are no such a user with id=%d: %s", id, users.get(id)));
         }

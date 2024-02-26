@@ -21,7 +21,7 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public Film findById(int id) {
+    public Film findById(Integer id) {
         return filmStorage.findById(id);
     }
 
@@ -36,7 +36,7 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public Film likeFilm(int id, int userId) {
+    public Film likeFilm(Integer id, Integer userId) {
         userStorage.checkUserExist(userId);
         userStorage.findById(userId).getFilmsLikes().add(id);
 
@@ -44,7 +44,7 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public Film dislikeFilm(int id, int userId) {
+    public Film dislikeFilm(Integer id, Integer userId) {
         filmStorage.checkFilmExist(id);
         userStorage.checkUserExist(userId);
         checkUserLikedFilm(id, userId);
@@ -54,11 +54,11 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public List<Film> getPopular(int count) {
+    public List<Film> getPopular(Integer count) {
         return filmStorage.getPopular(count);
     }
 
-    private void checkUserLikedFilm(int id, int userId) {
+    private void checkUserLikedFilm(Integer id, Integer userId) {
         if (!filmStorage.findById(id).getLikes().contains(userId) &&
                 !userStorage.findById(userId).getFilmsLikes().contains(id)) {
             throw new FilmNotFoundException(String.format("User id:%d have not previously liked that film id:%d.", userId, id));
