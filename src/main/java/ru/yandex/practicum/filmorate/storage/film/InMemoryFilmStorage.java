@@ -5,10 +5,7 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -53,9 +50,8 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film likeFilm(Integer id, Integer userId) {
-        Film film = films.get(id);
+        Film film = saveLike(id, userId);
 
-        film.getLikes().add(userId);
         film.setRate(film.getRate() + 1);
 
         return films.get(id);
@@ -63,9 +59,8 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film deleteLike(Integer id, Integer userId) {
-        Film film = films.get(id);
+        Film film = removeLike(id, userId);
 
-        film.getLikes().remove(userId);
         film.setRate(film.getRate() - 1);
 
         return films.get(id);
@@ -85,5 +80,23 @@ public class InMemoryFilmStorage implements FilmStorage {
         if (films.get(id) == null) {
             throw new FilmNotFoundException(String.format("There are no such a film with id=%d: %s", id, films.get(id)));
         }
+    }
+
+    private Film saveLike(Integer id, Integer userId) {
+        Film film = films.get(id);
+        Set<Integer> likes = film.getLikes();
+        likes.add(userId);
+        film.setLikes(likes);
+
+        return update(film);
+    }
+
+    private Film removeLike(Integer id, Integer userId) {
+        Film film = films.get(id);
+        Set<Integer> likes = film.getLikes();
+        likes.remove(userId);
+        film.setLikes(likes);
+
+        return update(film);
     }
 }

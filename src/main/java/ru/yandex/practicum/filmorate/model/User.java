@@ -31,8 +31,10 @@ public class User {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthday;
 
-    private final Set<Integer> filmsLikes = new HashSet<>();
-    private final Set<Integer> friends = new HashSet<>();
+    private Set<Integer> filmsLikes = new HashSet<>();
+
+    private Set<Integer> friends = new HashSet<>();
+
 
     public User(Integer id, String email, String login, String name, LocalDate birthday) {
         this.id = id;
@@ -40,5 +42,21 @@ public class User {
         this.login = login;
         this.name = name;
         this.birthday = birthday;
+    }
+
+    public Set<Integer> getFilmsLikes() {
+        return new HashSet<>(filmsLikes);
+    }
+
+    public Set<Integer> getFriends() {
+        return new HashSet<>(friends);
+    }
+
+    public void setFilmsLikes(Set<Integer> filmsLikes) {
+        this.filmsLikes = filmsLikes;
+    }
+
+    public void setFriends(Set<Integer> friends) {
+        this.friends = friends;
     }
 }

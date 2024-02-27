@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -38,7 +39,8 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public Film likeFilm(Integer id, Integer userId) {
         userStorage.checkUserExist(userId);
-        userStorage.findById(userId).getFilmsLikes().add(id);
+
+        saveUserLikeFilm(id, userId);
 
         return filmStorage.likeFilm(id, userId);
     }
@@ -48,7 +50,8 @@ public class FilmServiceImpl implements FilmService {
         filmStorage.checkFilmExist(id);
         userStorage.checkUserExist(userId);
         checkUserLikedFilm(id, userId);
-        userStorage.findById(userId).getFilmsLikes().remove(id);
+
+        removeUserLikeFilm(id, userId);
 
         return filmStorage.deleteLike(id, userId);
     }
@@ -59,9 +62,20 @@ public class FilmServiceImpl implements FilmService {
     }
 
     private void checkUserLikedFilm(Integer id, Integer userId) {
-        if (!filmStorage.findById(id).getLikes().contains(userId) &&
-                !userStorage.findById(userId).getFilmsLikes().contains(id)) {
+        if (!filmStorage.findById(id).getLikes().contains(userId) && !userStorage.findById(userId).getFilmsLikes().contains(id)) {
             throw new FilmNotFoundException(String.format("User id:%d have not previously liked that film id:%d.", userId, id));
         }
+    }
+
+    private void saveUserLikeFilm(Integer id, Integer userId) {
+        Set<Integer> likedFilms = userStorage.findById(userId).getFilmsLikes();
+        likedFilms.add(id);
+        userStorage.findById(userId).setFilmsLikes(likedFilms);
+    }
+
+    private void removeUserLikeFilm(Integer id, Integer userId) {
+        Set<Integer> likedFilms = userStorage.findById(userId).getFilmsLikes();
+        likedFilms.remove(id);
+        userStorage.findById(userId).setFilmsLikes(likedFilms);
     }
 }

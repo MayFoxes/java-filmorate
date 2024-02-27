@@ -36,7 +36,7 @@ public class Film {
     @NotNull
     private int rate = 0;
 
-    private final Set<Integer> likes = new HashSet<>();
+    private Set<Integer> likes = new HashSet<>();
 
     public Film(Integer id, String name, String description, LocalDate releaseDate, int duration) {
         this.id = id;
@@ -44,5 +44,13 @@ public class Film {
         this.description = description;
         this.releaseDate = releaseDate;
         this.duration = duration;
+    }
+
+    public Set<Integer> getLikes() {
+        return new HashSet<>(likes);
+    }
+
+    public void setLikes(Set<Integer> likes) {
+        this.likes = likes;
     }
 }

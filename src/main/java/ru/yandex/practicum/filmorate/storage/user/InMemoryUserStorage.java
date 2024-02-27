@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -54,16 +55,16 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public List<User> addFriend(Integer id, Integer friendId) {
-        users.get(id).getFriends().add(friendId);
-        users.get(friendId).getFriends().add(id);
+        saveFriend(id, friendId);
+        saveFriend(friendId, id);
         log.info("User{} add friend:{}", users.get(id), users.get(friendId));
         return List.of(users.get(id), users.get(friendId));
     }
 
     @Override
     public List<User> deleteFriend(Integer id, Integer friendId) {
-        users.get(id).getFriends().remove(friendId);
-        users.get(friendId).getFriends().remove(id);
+        removeFriend(id, friendId);
+        removeFriend(friendId, id);
         log.info("User{} delete friend:{}", users.get(id), users.get(friendId));
         return List.of(users.get(id), users.get(friendId));
     }
@@ -89,4 +90,21 @@ public class InMemoryUserStorage implements UserStorage {
             throw new UserNotFoundException(String.format("There are no such a user with id=%d: %s", id, users.get(id)));
         }
     }
+
+    private void saveFriend(Integer id, Integer friendId) {
+        User user = users.get(id);
+        Set<Integer> friends = user.getFriends();
+        friends.add(friendId);
+        user.setFriends(friends);
+        updateUser(user);
+    }
+
+    private void removeFriend(Integer id, Integer friendId) {
+        User user = users.get(id);
+        Set<Integer> friends = user.getFriends();
+        friends.remove(friendId);
+        user.setFriends(friends);
+        updateUser(user);
+    }
+
 }
