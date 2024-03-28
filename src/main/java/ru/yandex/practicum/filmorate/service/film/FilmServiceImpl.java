@@ -2,80 +2,54 @@ package ru.yandex.practicum.filmorate.service.film;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
-import java.util.List;
-import java.util.Set;
+import java.util.Collection;
 
 @Service
 @RequiredArgsConstructor
 public class FilmServiceImpl implements FilmService {
+
     private final FilmStorage filmStorage;
-    private final UserStorage userStorage;
 
     @Override
-    public List<Film> findAll() {
-        return filmStorage.findAll();
+    public Collection<Film> getAllFilms() {
+        return filmStorage.getAllFilms();
     }
 
     @Override
-    public Film findById(Integer id) {
-        return filmStorage.findById(id);
+    public Film getFilmById(Integer id) {
+        return filmStorage.getFilmById(id);
     }
 
     @Override
-    public Film create(Film film) {
-        return filmStorage.create(film);
-    }
-
-    @Override
-    public Film update(Film film) {
-        return filmStorage.update(film);
-    }
-
-    @Override
-    public Film likeFilm(Integer id, Integer userId) {
-        userStorage.checkUserExist(userId);
-
-        saveUserLikeFilm(id, userId);
-
-        return filmStorage.likeFilm(id, userId);
-    }
-
-    @Override
-    public Film dislikeFilm(Integer id, Integer userId) {
-        filmStorage.checkFilmExist(id);
-        userStorage.checkUserExist(userId);
-        checkUserLikedFilm(id, userId);
-
-        removeUserLikeFilm(id, userId);
-
-        return filmStorage.deleteLike(id, userId);
-    }
-
-    @Override
-    public List<Film> getPopular(Integer count) {
+    public Collection<Film> getPopular(Integer count) {
         return filmStorage.getPopular(count);
     }
 
-    private void checkUserLikedFilm(Integer id, Integer userId) {
-        if (!filmStorage.findById(id).getLikes().contains(userId) && !userStorage.findById(userId).getFilmsLikes().contains(id)) {
-            throw new FilmNotFoundException(String.format("User id:%d have not previously liked that film id:%d.", userId, id));
-        }
+    @Override
+    public Film addFilm(Film film) {
+        return filmStorage.addFilm(film);
     }
 
-    private void saveUserLikeFilm(Integer id, Integer userId) {
-        Set<Integer> likedFilms = userStorage.findById(userId).getFilmsLikes();
-        likedFilms.add(id);
-        userStorage.findById(userId).setFilmsLikes(likedFilms);
+    @Override
+    public Film updateFilm(Film film) {
+        return filmStorage.updateFilm(film);
     }
 
-    private void removeUserLikeFilm(Integer id, Integer userId) {
-        Set<Integer> likedFilms = userStorage.findById(userId).getFilmsLikes();
-        likedFilms.remove(id);
-        userStorage.findById(userId).setFilmsLikes(likedFilms);
+    @Override
+    public void deleteFilm(Integer id) {
+        filmStorage.deleteFilm(id);
+    }
+
+    @Override
+    public void addLike(Integer id, Integer userId) {
+        filmStorage.addLike(id, userId);
+    }
+
+    @Override
+    public void deleteLike(Integer id, Integer userId) {
+        filmStorage.deleteLike(id, userId);
     }
 }

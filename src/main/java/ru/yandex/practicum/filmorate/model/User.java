@@ -1,8 +1,8 @@
 package ru.yandex.practicum.filmorate.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Builder;
 import lombok.Data;
-import lombok.ToString;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -13,10 +13,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
-@ToString
+@Builder
 public class User {
 
-    private Integer id = 0;
+    private Integer id;
 
     @Email(message = "Email must not be empty and must have \"@\" ")
     private String email;
@@ -31,32 +31,5 @@ public class User {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthday;
 
-    private Set<Integer> filmsLikes = new HashSet<>();
-
     private Set<Integer> friends = new HashSet<>();
-
-
-    public User(Integer id, String email, String login, String name, LocalDate birthday) {
-        this.id = id;
-        this.email = email;
-        this.login = login;
-        this.name = name;
-        this.birthday = birthday;
-    }
-
-    public Set<Integer> getFilmsLikes() {
-        return new HashSet<>(filmsLikes);
-    }
-
-    public Set<Integer> getFriends() {
-        return new HashSet<>(friends);
-    }
-
-    public void setFilmsLikes(Set<Integer> filmsLikes) {
-        this.filmsLikes = filmsLikes;
-    }
-
-    public void setFriends(Set<Integer> friends) {
-        this.friends = friends;
-    }
 }

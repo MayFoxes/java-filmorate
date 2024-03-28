@@ -1,67 +1,47 @@
 # java-filmorate
+
 Template repository for Filmorate project.
+![ER-diagram.png](ER-diagram.png)
 
+Список таблиц
+FILMS - список фильмов
+GENRE - список жанров фильмов
+FILM_GENRE - таблица для связи фильмов с жанрами (у одного фильма может быть несколько жанров)
+RATING - список возрастных ограничений (рейтинг MPA)
+USERS - список пользователей
+USER_FILM - список пользователей, поставивших лайк фильму
+FRIENDS - список друзей пользователя
 
-![DB Schema.](/ER-diagram.png)
+Примеры запросов:
 
-
-Получение всех фильмов:
-
-```
-SELECT *
-FROM film;
-```
-
-Получение фильма по Id:
-
-```
-SELECT *
-FROM film
-WHERE id = 1;
-```
-
-Получение всех пользователей:
+1. Получить 10 самых популярных фильмов:
 
 ```
-SELECT *
-FROM user;
-```
-
-Получение пользователя по Id:
-
-```
-SELECT *
-FROM user
-WHERE id = 1;
-```
-
-Получение списка друзей:
-
-```
-SELECT user_2.name
-FROM user
-INNER JOIN friend on user.user_id = friend.user_id
-INNER JOIN user as user_2 on user_2.user_id = friend.friend_id
-WHERE user.user_id = 1;
-```
-
-Получение 10 фильмов с максимальным кол-вом лайков:
-/через таблицу like
-
-```
-SELECT  film_name, COUNT(like.film_id)
-FROM film
-INNER JOIN film_user_like as like on film.film_id = like.film_id
-GROUP BY film_name
-ORDER BY COUNT(like.film_id) DESC
+SELECT F.*, R.*, COUNT(UF.FILM_ID) AS LIKES
+FROM FILMS AS F
+LEFT JOIN RATING AS R ON R.RATING_ID = F.RATING
+LEFT JOIN USER_FILM AS UF ON F.FILM_ID = UF.FILM_ID
+GROUP BY F.FILM_ID
+HAVING LIKES > 0
+ORDER BY LIKES DESC
 LIMIT 10;
-```
-/через внутренее поле таблицы film - likes
 
 ```
-SELECT  film_name
-FROM film
-GROUP BY film_name
-ORDER BY likes desc
-LIMIT 10;
+
+2. Список друзей пользователя
+
+```
+SELECT * FROM USERS 
+WHERE USER_ID IN (SELECT FRIEND_ID FROM FRIENDS WHERE USER_ID=?);
+
+```
+
+3. Список общих друзей
+
+```
+SELECT U.*
+FROM USERS AS U
+JOIN FRIENDS F1 ON U.USER_ID = F1.FRIEND_ID AND F1.USER_ID=?
+JOIN FRIENDS F2 ON U.USER_ID = F2.FRIEND_ID AND F2.USER_ID=?
+
 ```
