@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
-import java.util.List;
+import java.util.Collection;
 
 @Service
 @RequiredArgsConstructor
@@ -14,54 +14,47 @@ public class UserServiceImpl implements UserService {
     private final UserStorage userStorage;
 
     @Override
-    public List<User> findAll() {
-        return userStorage.findAll();
+    public Collection<User> getALlUsers() {
+        return userStorage.getAllUsers();
     }
 
     @Override
-    public User findById(Integer id) {
-        userStorage.checkUserExist(id);
-        return userStorage.findById(id);
+    public User getUserById(Integer id) {
+        return userStorage.getUserById(id);
     }
 
     @Override
-    public User create(User user) {
-        return userStorage.create(user);
+    public User addUser(User user) {
+        return userStorage.addUser(user);
     }
 
     @Override
-    public User update(User user) {
+    public void deleteUser(Integer id) {
+        userStorage.deleteUser(id);
+    }
+
+    @Override
+    public User updateUser(User user) {
         return userStorage.updateUser(user);
     }
 
     @Override
-    public List<User> addFriend(Integer id, Integer friendId) {
-        userStorage.checkUserExist(id);
-        userStorage.checkUserExist(friendId);
-
-        return userStorage.addFriend(id, friendId);
+    public void addFriend(Integer id, Integer friendId) {
+        userStorage.addFriend(id, friendId);
     }
 
     @Override
-    public List<User> deleteFriend(Integer id, Integer friendId) {
-        userStorage.checkUserExist(id);
-        userStorage.checkUserExist(friendId);
-
-        return userStorage.deleteFriend(id, friendId);
+    public void deleteFriend(Integer id, Integer friendId) {
+        userStorage.deleteFriend(id, friendId);
     }
 
     @Override
-    public List<User> getFriends(Integer id) {
-        userStorage.checkUserExist(id);
-
+    public Collection<User> getFriends(Integer id) {
         return userStorage.getFriends(id);
     }
 
     @Override
-    public List<User> getCommonFriends(Integer id, Integer otherId) {
-        userStorage.checkUserExist(id);
-        userStorage.checkUserExist(otherId);
-
+    public Collection<User> getCommonFriends(Integer id, Integer otherId) {
         return userStorage.getCommonFriends(id, otherId);
     }
 }
