@@ -1,8 +1,8 @@
 package ru.yandex.practicum.filmorate.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Builder;
 import lombok.Data;
-import lombok.ToString;
 import ru.yandex.practicum.filmorate.annotation.FilmAnnotation;
 
 import javax.validation.constraints.NotEmpty;
@@ -10,14 +10,14 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
-@ToString
+@Builder
 public class Film {
 
-    private Integer id = 0;
+    private Integer id;
 
     @NotEmpty(message = "Film name can not be empty")
     private String name;
@@ -31,26 +31,11 @@ public class Film {
     private LocalDate releaseDate;
 
     @Positive(message = "The length of the film must be positive")
-    private int duration;
+    private Integer duration;
 
     @NotNull
-    private int rate = 0;
+    private Mpa mpa;
 
-    private Set<Integer> likes = new HashSet<>();
+    private List<Genre> genres = new ArrayList<>();
 
-    public Film(Integer id, String name, String description, LocalDate releaseDate, int duration) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.releaseDate = releaseDate;
-        this.duration = duration;
-    }
-
-    public Set<Integer> getLikes() {
-        return new HashSet<>(likes);
-    }
-
-    public void setLikes(Set<Integer> likes) {
-        this.likes = likes;
-    }
 }
