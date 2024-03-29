@@ -167,11 +167,8 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     private void updateGenreForFilm(Integer filmId, List<Genre> genres) {
-        String sqlDelete = "DELETE FROM FILM_GENRE WHERE FILM_ID=? ";
-        jdbcTemplate.update(sqlDelete, filmId);
-
         if (genres != null && !genres.isEmpty()) {
-            String sqlInsert = "INSERT INTO FILM_GENRE (FILM_ID, GENRE_ID) VALUES (?, ?) ";
+            String sqlInsert = "MERGE INTO FILM_GENRE (FILM_ID, GENRE_ID) VALUES (?, ?) ";
             jdbcTemplate.batchUpdate(sqlInsert, new BatchPreparedStatementSetter() {
                 @Override
                 public void setValues(PreparedStatement ps, int i) throws SQLException {
