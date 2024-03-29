@@ -11,8 +11,11 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.genre.GenreStorage;
 import ru.yandex.practicum.filmorate.storage.genre.dao.GenreDbStorage;
+import ru.yandex.practicum.filmorate.storage.mpa.MpaStorage;
 import ru.yandex.practicum.filmorate.storage.mpa.dao.MpaDbStorage;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 import ru.yandex.practicum.filmorate.storage.user.dao.UserDbStorage;
 
 import java.sql.PreparedStatement;
@@ -27,19 +30,19 @@ import java.util.*;
 public class FilmDbStorage implements FilmStorage {
 
     private final JdbcTemplate jdbcTemplate;
-    private final UserDbStorage userDbStorage;
-    private final MpaDbStorage mpaDbStorage;
-    private final GenreDbStorage genreDbStorage;
+    private final UserStorage userStorage;
+    private final MpaStorage mpaStorage;
+    private final GenreStorage genreStorage;
 
     @Autowired
     public FilmDbStorage(JdbcTemplate jdbcTemplate,
-                         UserDbStorage userDbStorage,
-                         MpaDbStorage mpaDbStorage,
-                         GenreDbStorage genreDbStorage) {
+                         UserDbStorage userStorage,
+                         MpaDbStorage mpaStorage,
+                         GenreDbStorage genreStorage) {
         this.jdbcTemplate = jdbcTemplate;
-        this.userDbStorage = userDbStorage;
-        this.mpaDbStorage = mpaDbStorage;
-        this.genreDbStorage = genreDbStorage;
+        this.userStorage = userStorage;
+        this.mpaStorage = mpaStorage;
+        this.genreStorage = genreStorage;
     }
 
     @Override
@@ -110,7 +113,7 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public void addLike(Integer filmId, Integer userId) {
         checkFilmExist(filmId);
-        userDbStorage.checkUserExist(userId);
+        userStorage.checkUserExist(userId);
         String sql = "INSERT INTO USER_FILM (USER_ID, FILM_ID) VALUES(?, ?);";
         jdbcTemplate.update(sql, userId, filmId);
         log.info("Like added to film with id={}.", filmId);
@@ -119,7 +122,7 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public void deleteLike(Integer filmId, Integer userId) {
         checkFilmExist(filmId);
-        userDbStorage.checkUserExist(userId);
+        userStorage.checkUserExist(userId);
         String sql = "DELETE FROM USER_FILM WHERE FILM_ID=? AND USER_ID=?;";
         jdbcTemplate.update(sql, filmId, userId);
         log.info("Like remove.");
@@ -151,14 +154,14 @@ public class FilmDbStorage implements FilmStorage {
     private Film makeFilm(ResultSet rs) throws SQLException {
         Integer id = rs.getInt("FILM_ID");
         String sqlGenre = "SELECT * FROM GENRE WHERE GENRE_ID IN (SELECT GENRE_ID FROM FILM_GENRE WHERE FILM_ID=?);";
-        List<Genre> genres = jdbcTemplate.query(sqlGenre, (result, rowNum) -> genreDbStorage.makeGenre(result), id);
+        List<Genre> genres = jdbcTemplate.query(sqlGenre, (result, rowNum) -> genreStorage.makeGenre(result), id);
         return Film.builder()
                 .id(rs.getInt("FILM_ID"))
                 .name(rs.getString("TITLE"))
                 .description(rs.getString("DESCRIPTION"))
                 .releaseDate(LocalDate.parse(rs.getString("RELEASE_DATE")))
                 .duration(rs.getInt("DURATION"))
-                .mpa(mpaDbStorage.makeMpa(rs))
+                .mpa(mpaStorage.makeMpa(rs))
                 .genres(genres)
                 .build();
     }
