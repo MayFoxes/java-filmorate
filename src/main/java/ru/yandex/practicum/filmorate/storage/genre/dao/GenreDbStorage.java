@@ -34,7 +34,6 @@ public class GenreDbStorage implements GenreStorage {
         checkGenreExist(id);
         String sql = "SELECT * FROM GENRE WHERE GENRE_ID=?;";
         return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> makeGenre(rs), id);
-
     }
 
     @Override

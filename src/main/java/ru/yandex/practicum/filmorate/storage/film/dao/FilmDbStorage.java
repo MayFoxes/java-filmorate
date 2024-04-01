@@ -59,7 +59,7 @@ public class FilmDbStorage implements FilmStorage {
 
         Film newFilm = getFilmById(filmId);
         log.info("Film added: {}.", newFilm);
-        return getFilmById(filmId);
+        return newFilm;
     }
 
     @Override
@@ -95,7 +95,7 @@ public class FilmDbStorage implements FilmStorage {
                 "LEFT OUTER JOIN RATING AS R ON R.RATING_ID = F.RATING " +
                 "WHERE FILM_ID=?;";
         checkFilmExist(filmId);
-        Film film = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> makeFilm(rs), filmId);
+        Film film = jdbcTemplate.query(sql, this::makeFilm, filmId).get(0);
         log.info("Get film. film{}.", film);
         return film;
     }
@@ -105,7 +105,7 @@ public class FilmDbStorage implements FilmStorage {
         String sql = "SELECT * FROM FILMS AS F " +
                 "LEFT OUTER JOIN RATING AS R ON R.RATING_ID = F.RATING " +
                 "ORDER BY FILM_ID;";
-        Collection<Film> films = jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs));
+        Collection<Film> films = jdbcTemplate.query(sql, this::makeFilm);
         log.info("Get all films. Count of films {}.", films.size());
         return films;
     }
@@ -138,7 +138,7 @@ public class FilmDbStorage implements FilmStorage {
                 "HAVING LIKES > 0 " +
                 "ORDER BY LIKES DESC " +
                 "LIMIT ?;";
-        Collection<Film> films = jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs), count);
+        Collection<Film> films = jdbcTemplate.query(sql, this::makeFilm, count);
         log.info("Get top films: {}.", films.size());
         return films;
     }
@@ -151,7 +151,7 @@ public class FilmDbStorage implements FilmStorage {
                 .orElseThrow(() -> new NotFoundException(String.format("No such film with this id:%s.", id)));
     }
 
-    private Film makeFilm(ResultSet rs) throws SQLException {
+    private Film makeFilm(ResultSet rs, int num) throws SQLException {
         Integer id = rs.getInt("FILM_ID");
         String sqlGenre = "SELECT * FROM GENRE WHERE GENRE_ID IN (SELECT GENRE_ID FROM FILM_GENRE WHERE FILM_ID=?);";
         List<Genre> genres = jdbcTemplate.query(sqlGenre, (result, rowNum) -> genreStorage.makeGenre(result), id);
