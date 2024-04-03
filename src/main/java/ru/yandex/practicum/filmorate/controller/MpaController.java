@@ -17,7 +17,7 @@ public class MpaController {
     private final MpaService mpaService;
 
     @GetMapping("/{id}")
-    public Mpa findMpa(@PathVariable("id") Integer id) {
+    public Mpa findMpa(@PathVariable Integer id) {
         return mpaService.getMpa(id);
     }
 
