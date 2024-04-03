@@ -11,9 +11,9 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.genre.dao.GenreDbStorage;
-import ru.yandex.practicum.filmorate.storage.mpa.dao.MpaDbStorage;
-import ru.yandex.practicum.filmorate.storage.user.dao.UserDbStorage;
+import ru.yandex.practicum.filmorate.storage.genre.dao.GenreStorage;
+import ru.yandex.practicum.filmorate.storage.mpa.dao.MpaStorage;
+import ru.yandex.practicum.filmorate.storage.user.dao.UserStorage;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -27,15 +27,15 @@ import java.util.*;
 public class FilmDbStorage implements FilmStorage {
 
     private final JdbcTemplate jdbcTemplate;
-    private final UserDbStorage userDbStorage;
-    private final MpaDbStorage mpaDbStorage;
-    private final GenreDbStorage genreDbStorage;
+    private final UserStorage userDbStorage;
+    private final MpaStorage mpaDbStorage;
+    private final GenreStorage genreDbStorage;
 
     @Autowired
     public FilmDbStorage(JdbcTemplate jdbcTemplate,
-                         UserDbStorage userDbStorage,
-                         MpaDbStorage mpaDbStorage,
-                         GenreDbStorage genreDbStorage) {
+                         UserStorage userDbStorage,
+                         MpaStorage mpaDbStorage,
+                         GenreStorage genreDbStorage) {
         this.jdbcTemplate = jdbcTemplate;
         this.userDbStorage = userDbStorage;
         this.mpaDbStorage = mpaDbStorage;

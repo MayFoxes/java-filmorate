@@ -5,7 +5,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.storage.genre.GenreStorage;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,10 +13,10 @@ import java.util.Optional;
 
 @Component
 @Primary
-public class GenreDbStorage implements GenreStorage {
+public class GenreStorage implements ru.yandex.practicum.filmorate.storage.genre.GenreStorage {
     private final JdbcTemplate jdbcTemplate;
 
-    public GenreDbStorage(JdbcTemplate jdbcTemplate) {
+    public GenreStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

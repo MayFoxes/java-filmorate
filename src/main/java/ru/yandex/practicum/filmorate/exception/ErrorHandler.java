@@ -14,6 +14,7 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleIncorrectParameterException(final IncorrectParameterException e) {
+        log.error(e.getMessage());
         return new ErrorResponse(
                 String.format("Wrong field \"%s\".", e.getParameter())
         );
@@ -22,6 +23,7 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotFoundException(final NotFoundException e) {
+        log.error(e.getMessage());
         return new ErrorResponse(
                 e.getMessage()
         );
@@ -30,6 +32,7 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleUserAlreadyExistException(final UserAlreadyExistException e) {
+        log.error(e.getMessage());
         return new ErrorResponse(
                 e.getMessage()
         );
@@ -38,6 +41,7 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleUnhandledException(final Exception e) {
+        log.error(e.getMessage());
         return new ErrorResponse(
                 e.getMessage()
         );

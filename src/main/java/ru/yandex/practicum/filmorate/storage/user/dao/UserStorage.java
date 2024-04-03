@@ -7,7 +7,6 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,11 +19,11 @@ import java.util.Optional;
 @Component
 @Slf4j
 @Primary
-public class UserDbStorage implements UserStorage {
+public class UserStorage implements ru.yandex.practicum.filmorate.storage.user.UserStorage {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public UserDbStorage(JdbcTemplate jdbcTemplate) {
+    public UserStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

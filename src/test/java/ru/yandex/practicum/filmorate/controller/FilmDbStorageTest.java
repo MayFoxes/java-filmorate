@@ -9,7 +9,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.dao.FilmDbStorage;
-import ru.yandex.practicum.filmorate.storage.user.dao.UserDbStorage;
+import ru.yandex.practicum.filmorate.storage.user.dao.UserStorage;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class FilmDbStorageTest {
 
     private final FilmDbStorage filmDbStorage;
-    private final UserDbStorage userDbStorage;
+    private final UserStorage userDbStorage;
 
     @Test
     public void addFilmTest() {
