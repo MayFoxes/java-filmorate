@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
-@Builder
+@Builder(toBuilder = true)
 public class User {
 
     private Integer id;
