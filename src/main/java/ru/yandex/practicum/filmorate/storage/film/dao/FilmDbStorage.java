@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.event.Events;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
@@ -23,6 +24,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
+
+import static ru.yandex.practicum.filmorate.model.event.EventOperation.ADD;
+import static ru.yandex.practicum.filmorate.model.event.EventOperation.REMOVE;
+import static ru.yandex.practicum.filmorate.model.event.EventType.LIKE;
 
 @Component
 @Slf4j
@@ -115,6 +120,7 @@ public class FilmDbStorage implements FilmStorage {
         userStorage.checkUserExist(userId);
         String sql = "INSERT INTO USER_FILM (USER_ID, FILM_ID) VALUES(?, ?);";
         jdbcTemplate.update(sql, userId, filmId);
+        Events.addEvent(jdbcTemplate, LIKE, ADD, filmId, userId);
         log.info("Like added to film with id={}.", filmId);
     }
 
@@ -124,7 +130,8 @@ public class FilmDbStorage implements FilmStorage {
         userStorage.checkUserExist(userId);
         String sql = "DELETE FROM USER_FILM WHERE FILM_ID=? AND USER_ID=?;";
         jdbcTemplate.update(sql, filmId, userId);
-        log.info("Like remove.");
+        Events.addEvent(jdbcTemplate, LIKE, REMOVE, filmId, userId);
+        log.info("Like removed from film with id={}.", filmId);
     }
 
     @Override
