@@ -25,4 +25,6 @@ public interface FilmStorage {
     void checkFilmExist(Integer id);
 
     Collection<Film> getUserRecommendations(Integer userId);
+
+    Collection<Film> commonFilms(Integer userId, Integer friendId);
 }
