@@ -54,5 +54,10 @@ public class FilmController {
     public void deleteLike(@PathVariable Integer id, @PathVariable Integer userId) {
         filmService.deleteLike(id, userId);
     }
+
+    @GetMapping("/common")
+    public Collection<Film> commonFilms(@RequestParam Integer userId, Integer friendId) {
+        return filmService.commonFilms(userId, friendId);
+    }
 }
 
