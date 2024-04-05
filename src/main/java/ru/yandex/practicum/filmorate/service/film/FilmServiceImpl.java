@@ -52,4 +52,9 @@ public class FilmServiceImpl implements FilmService {
     public void deleteLike(Integer id, Integer userId) {
         filmStorage.deleteLike(id, userId);
     }
+
+    @Override
+    public Collection<Film> commonFilms(Integer userId, Integer friendId) {
+        return filmStorage.commonFilms(userId, friendId);
+    }
 }
