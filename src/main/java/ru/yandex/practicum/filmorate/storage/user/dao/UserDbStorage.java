@@ -36,9 +36,6 @@ public class UserDbStorage implements UserStorage {
         checkUserName(user);
         User newUser = getUserById(simpleJdbcInsert.executeAndReturnKey(toMap(user)).intValue());
         log.info("User added. user{}.", newUser);
-        if (user.getName() == null || user.getName().isEmpty() || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
         return newUser;
     }
 
@@ -150,7 +147,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     private void checkUserName(User user) {
-        if (user.getName() == null || user.getName().isBlank()) {
+        if (user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
     }
